@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 12:27:51 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/11/30 14:48:34 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/02 21:25:21 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
+
 
 
  typedef struct s_node
@@ -27,5 +29,9 @@
     char    *content;
     struct  s_node  *next;
  } t_node;
+
+ 
+ char	*ft_substr(char const *s, unsigned int start, size_t len);
+
 
 #endif
