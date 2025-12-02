@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AI.c                                               :+:      :+:    :+:   */
+/*   primary.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 23:39:30 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/02 00:23:43 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/02 12:25:23 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,37 +103,38 @@ char *extract_line(t_node *list)
 
 void clean_written(t_node *list)
 {
-    int len = count_line_length(list);
     int node_index = 0;
     int i = 0;
     t_node *tmp;
     tmp = list;
+    
     while(tmp->next)
     {
-        while(tmp->content[i] != '\n')
+        
+        while(tmp->content && tmp->content[i] != '\n')
         {
             i++;
-        }
+            printf("i : %d\n",i);
+        }       
         node_index++;
+        if (tmp->content[i] == '\n')
+        {
+            break;
+        }
         tmp= tmp->next;
     }
-    int j = 0;
-    while(j < node_index)
-    {
-       
-    }
+    printf("node index :%d\n",node_index);
+    printf("new line index :%d\n",i);
 }
-
 char *get_next_line(int fd)
 {
-    static t_node *list = NULL;
+    static t_node *list;
     t_node *node;
     char *buffer;
     char *line;
     int bytes_read;
 
-    if (fd < 0)
-        return NULL;
+
 
     while (1)
     {
@@ -143,13 +144,13 @@ char *get_next_line(int fd)
         
         bytes_read = read(fd, buffer, 12);
         
-        if (bytes_read < 0)  // error
-        {
-            free(buffer);
-            clean_written(list);
-            list = NULL;
-            return NULL;
-        }
+        // if (bytes_read < 0)  // error
+        // {
+        //     free(buffer);
+        //     clean_written(list);
+        //     list = NULL;
+        //     return NULL;
+        // }
         
         if (bytes_read == 0)  // eof
         {
@@ -157,34 +158,34 @@ char *get_next_line(int fd)
             break;
         }
         
-        buffer[bytes_read] = '\0';  //  FIX: Null-terminate
+        buffer[bytes_read] = '\0';  //FIX: Null-terminate
         
         node = new_node(buffer);
         add_node_back(&list, node);
         
         // Check if we found newline
-        int i = 0;
-        while (i < bytes_read)
-        {
-            if (buffer[i] == '\n')
-            {
-                line = extract_line(list);
-                clean_written(list);
-                list = NULL;
-                return line;
-            }
-            i++;
-        }
+        // int i = 0;
+        // while (i < bytes_read)
+        // {
+        //     if (buffer[i] == '\n')
+        //     {
+        //         line = extract_line(list);
+        //         // clean_written(list);
+        //         // list = NULL;
+        //         return line;
+        //     }
+        //     i++;
+        // }
     }
 
     // EOF reached - return remaining content
     line = extract_line(list);
     clean_written(list);
-    list = NULL;
-    return line;
+    // list = NULL;
+    return "";
 }
 
-/* TEST MAIN */
+
 int main(void)
 {
     int fd = open("file.txt", O_RDONLY);
@@ -198,9 +199,6 @@ int main(void)
     // }
     result = get_next_line(fd);
     printf("%s",result);
-    result = get_next_line(fd);
-    printf("%s",result);
-    
-    // close(fd);
-    return 0;
+
+
 }
