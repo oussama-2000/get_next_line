@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 23:39:30 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/02 12:25:23 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/02 19:45:47 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,27 +104,30 @@ char *extract_line(t_node *list)
 void clean_written(t_node *list)
 {
     int node_index = 0;
-    int i = 0;
+    int new_line=0;
     t_node *tmp;
     tmp = list;
-    
+
+
     while(tmp->next)
     {
-        
-        while(tmp->content && tmp->content[i] != '\n')
-        {
-            i++;
-            printf("i : %d\n",i);
-        }       
         node_index++;
-        if (tmp->content[i] == '\n')
+
+        int i = 0;
+        while (tmp->content && tmp->content[i])
         {
-            break;
-        }
+            if(tmp->content[i] == '\n')
+            {
+                new_line=i;
+                printf("node index :%d\n", node_index);
+                printf("new line index :%d\n", new_line);
+                return;
+            }
+            printf("i : %d\n",i);
+            i++;
+        }    
         tmp= tmp->next;
     }
-    printf("node index :%d\n",node_index);
-    printf("new line index :%d\n",i);
 }
 char *get_next_line(int fd)
 {
