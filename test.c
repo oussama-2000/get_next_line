@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 23:39:30 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/02 22:52:57 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/04 01:19:32 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ char *extract_line(t_node *list)
     line = malloc(len + 1);
     if (!line)
         return NULL;
-
+        
     while (tmp)
     {
         int j = 0;
@@ -112,21 +112,17 @@ char *extract_line(t_node *list)
     return line;
 }
 
-// Free nodes and update list to keep only leftover after newline
 void update_list(t_node **list)
 {
-    t_node *tmp;
-    t_node *last_node;
-    char *leftover;
-    int i;
+    t_node *tmp = *list;
+    t_node *newline_node = NULL;
+    char *leftover = NULL;
+    int i = 0;
 
     if (!list || !*list)
         return;
 
-    tmp = *list;
-    last_node = NULL;
-    
-    // Find the node containing '\n'
+    // 1) find the node that contain the \n
     while (tmp)
     {
         i = 0;
@@ -134,46 +130,50 @@ void update_list(t_node **list)
         {
             if (tmp->content[i] == '\n')
             {
-                // Found newline - save leftover content
-                if (tmp->content[i + 1] != '\0')
-                {
-                    // There's content after newline
-                    leftover = malloc(strlen(tmp->content + i + 1) + 1);
-                    if (!leftover)
-                        return;
-                    
-                    int j = 0;
-                    i++; // Skip the newline
-                    while (tmp->content[i])
-                        leftover[j++] = tmp->content[i++];
-                    leftover[j] = '\0';
-                    
-                    // Free all nodes
-                    free_list(*list);
-                    
-                    // Create new list with leftover
-                    *list = new_node(leftover);
-                    return;
-                }
-                else
-                {
-                    // Newline is at end of buffer - free everything
-                    free_list(*list);
-                    *list = NULL;
-                    return;
-                }
+                newline_node = tmp;
+                break;
             }
             i++;
         }
+        if (newline_node)
+            break;
         tmp = tmp->next;
     }
-    
-    // No newline found - this means EOF was reached
-    // Free everything since we returned all content
-    free_list(*list);
-    *list = NULL;
-}
 
+    // 2) If no newline > whole list was returned > free everything
+    if (!newline_node)
+    {
+        free_list(*list);
+        *list = NULL;
+        return;
+    }
+
+    // 3)check if leftover exits after /n and extract it
+    if (newline_node->content[i + 1] != '\0')
+    {
+        leftover = strdup(newline_node->content + i + 1);
+        if (!leftover)
+            return;
+    }
+
+    // 4) Free all nodes that belong to the extracted line
+    tmp = *list;
+    while (tmp)
+    {
+        t_node *next = tmp->next;
+        free(tmp->content);
+        free(tmp);
+        if (tmp == newline_node)
+            break;
+        tmp = next;
+    }
+
+    // 5) Rebuild list only with leftover (if exists)
+    if (leftover)
+        *list = new_node(leftover);
+    else
+        *list = NULL;
+}
 
 int has_newline(t_node *list)
 {
@@ -201,18 +201,18 @@ char *get_next_line(int fd)
     char *line;
     int bytes_read;
 
-    if (fd < 0 || 12 <= 0)
+    if (fd < 0 || BUFFER_SIZE <= 0)
         return NULL;
-
+    // printf("list condition : %d\n",has_newline(list));
     // Read until we find a newline or reach EOF
     while (!has_newline(list))
     {
-        buffer = malloc(12 + 1);
+        buffer = malloc(BUFFER_SIZE + 1);
         if (!buffer)
             return NULL;
-        
-        bytes_read = read(fd, buffer, 12);
-        
+
+        bytes_read = read(fd, buffer, BUFFER_SIZE);
+
         if (bytes_read < 0)  // Error
         {
             free(buffer);
@@ -242,18 +242,22 @@ char *get_next_line(int fd)
     return line;
 }
 
-/* TEST MAIN */
+
 int main(void)
 {
     int fd = open("file.txt", O_RDONLY);
 
     char *result;
     
-    result = get_next_line(fd);
-    printf("%s",result);
-    result = get_next_line(fd);
-    printf("%s",result);
-    result = get_next_line(fd);
-    printf("%s",result);
+    while((result = get_next_line(fd)))
+    {
+        printf("%s",result);
+    }
+    // result = get_next_line(fd);
+    // printf("%s",result);
+    // result = get_next_line(fd);
+    // printf("%s",result);
+    // result = get_next_line(fd);
+    // printf("%s",result);
     return 0;
 }
