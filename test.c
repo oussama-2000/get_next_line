@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ai.c                                               :+:      :+:    :+:   */
+/*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 23:39:30 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/04 01:19:32 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/04 18:54:06 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
 
 int count_line_length(t_node *list)
 {
@@ -44,18 +45,7 @@ t_node *new_node(char *content)
     return node;
 }
 
-void free_list(t_node *list)
-{
-    t_node *tmp;
 
-    while (list)
-    {
-        tmp = list;
-        list = list->next;
-        free(tmp->content);
-        free(tmp);
-    }
-}
 
 void add_node_back(t_node **lst, t_node *new)
 {
@@ -111,7 +101,18 @@ char *extract_line(t_node *list)
     line[i] = '\0';
     return line;
 }
+void free_list(t_node *list)
+{
+    t_node *tmp;
 
+    while (list)
+    {
+        tmp = list;
+        list = list->next; // start from the first node that list point to
+        free(tmp->content);
+        free(tmp);
+    }
+}
 void update_list(t_node **list)
 {
     t_node *tmp = *list;
@@ -140,7 +141,7 @@ void update_list(t_node **list)
         tmp = tmp->next;
     }
 
-    // 2) If no newline > whole list was returned > free everything
+    // 2) if no newline > whole list was returned > free everything
     if (!newline_node)
     {
         free_list(*list);
@@ -156,7 +157,7 @@ void update_list(t_node **list)
             return;
     }
 
-    // 4) Free all nodes that belong to the extracted line
+    // 4) free all nodes that belong to the extracted line
     tmp = *list;
     while (tmp)
     {
@@ -168,7 +169,7 @@ void update_list(t_node **list)
         tmp = next;
     }
 
-    // 5) Rebuild list only with leftover (if exists)
+    // 5) rebuild list only with leftover (if exists)
     if (leftover)
         *list = new_node(leftover);
     else
@@ -201,15 +202,18 @@ char *get_next_line(int fd)
     char *line;
     int bytes_read;
 
-    if (fd < 0 || BUFFER_SIZE <= 0)
+    if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE >= 2147483647)
         return NULL;
-    // printf("list condition : %d\n",has_newline(list));
+
     // Read until we find a newline or reach EOF
     while (!has_newline(list))
     {
         buffer = malloc(BUFFER_SIZE + 1);
         if (!buffer)
+        {
+            printf("error from malloc\n");
             return NULL;
+        }
 
         bytes_read = read(fd, buffer, BUFFER_SIZE);
 
@@ -252,6 +256,7 @@ int main(void)
     while((result = get_next_line(fd)))
     {
         printf("%s",result);
+        free(result);
     }
     // result = get_next_line(fd);
     // printf("%s",result);
