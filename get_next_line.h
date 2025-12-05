@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 12:27:51 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/04 18:54:15 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/05 00:55:11 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include <fcntl.h>
 #include <string.h>
 
-#define BUFFER_SIZE 2147483646
+#define BUFFER_SIZE 1
 
 typedef struct s_node
 {
@@ -31,7 +31,11 @@ typedef struct s_node
 } t_node;
 
  
- char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strdup(const char *s);
+int count_line_length(t_node *list);
+t_node *new_node(char *content);
+void add_node_back(t_node **lst, t_node *new);
+void free_list(t_node **list, int type, t_node *newline_node);
 
 
 #endif
