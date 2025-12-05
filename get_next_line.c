@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 23:39:30 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/05 17:37:31 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/06 00:24:16 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,46 +74,48 @@ void	update_list(t_node **list)
 	tmp = *list;
 	read_left = NULL;
 	i = 0;
-	if (!list || !*list)
-		return;
-	// 1) find the node that contain the \n
 	newline_node = find_newline_node(*list, &i);
-	// 2) if no newline > whole list was returned > free everything
 	if (!newline_node)
 	{
-		free_list(list, 1, NULL);
+		free_list(list, NULL);
 		*list = NULL;
-		return;
+		return ;
 	}
-	// 3)check if read_left exits after /n and extract it
 	if (newline_node->content[i + 1] != '\0')
 	{
 		read_left = ft_strdup(newline_node->content + i + 1);
 		if (!read_left)
-			return;
+			return ;
 	}
-	// 4) free all nodes that belong to the extracted line
-	free_list(list, 0, newline_node);
-	// 5) rebuild list only with read_left (if exists)
-	*list = read_left ? new_node(read_left) : NULL;
+	free_list(list, newline_node);
+	*list = NULL;
+	if (read_left)
+		list_add_back(list, read_left);
 }
 
-int	has_newline(t_node *list)
+int	ft_while(int fd, t_node **list)
 {
-	t_node	*tmp;
-	int		i;
-	
-	tmp = list;
-	while (tmp)
+	char	*buffer;
+	int		bytes;
+
+	while (!has_newline(*list))
 	{
-		i = 0;
-		while (tmp->content[i])
+		buffer = malloc(BUFFER_SIZE + 1);
+		if (!buffer)
+			return (-1);
+		bytes = read(fd, buffer, BUFFER_SIZE);
+		if (bytes < 0)
 		{
-			if (tmp->content[i] == '\n')
-				return (1);
-			i++;
+			free(buffer);
+			return (-1);
 		}
-		tmp = tmp->next;
+		if (bytes == 0)
+		{
+			free(buffer);
+			return (1);
+		}
+		buffer[bytes] = '\0';
+		list_add_back(list, buffer);
 	}
 	return (0);
 }
@@ -121,47 +123,38 @@ int	has_newline(t_node *list)
 char	*get_next_line(int fd)
 {
 	static t_node	*list;
-	t_node			*node;
-	char			*buffer;
 	char			*line;
-	int				bytes_read;
+	int				status;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE >= 2147483647)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	// read until we find a newline or reach EOF
-	while (!has_newline(list))
+	status = ft_while(fd, &list);
+	if (status == -1)
 	{
-		if (!(buffer = malloc(BUFFER_SIZE + 1)))
-			return (NULL);
-		if ((bytes_read = read(fd, buffer, BUFFER_SIZE)) < 0) // read error
-			return (free(buffer), free_list(&list, 1, NULL), list=NULL, NULL);
-		if (bytes_read == 0)  // EOF
-			return (free(buffer), line = extract_line(list),
-			 update_list(&list), line);
-		buffer[bytes_read] = '\0';
-		node = new_node(buffer);
-		add_node_back(&list, node);
+		free_list(&list, NULL);
+		return (NULL);
 	}
 	line = extract_line(list);
-	update_list(&list);
+	if (list)
+		update_list(&list);
 	return (line);
 }
 
-int main(void)
-{
-	int fd = open("file.txt", O_RDONLY);
+// int main(void)
+// {
+// 	int fd = open("file.txt", O_RDONLY);
 
-	char *result;
-	
-	while((result = get_next_line(fd)))
-	{
-		printf("%s",result);
-		free(result);
-	}
-	// result = get_next_line(fd);
-	// printf("%s",result);
-	// result = get_next_line(fd);
-	// printf("%s",result);
-	// result = get_next_line(fd);
-	// printf("%s",result);
-}
+// 	char *result;
+
+// 	while((result = get_next_line(fd)))
+// 	{
+// 		printf("%s",result);
+// 		free(result);
+// 	}
+// 	// result = get_next_line(fd);
+// 	// printf("%s",result);
+// 	// result = get_next_line(fd);
+// 	// printf("%s",result);
+// 	// // result = get_next_line(fd);
+// 	// printf("%s",result);
+// }

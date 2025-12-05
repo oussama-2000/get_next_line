@@ -6,18 +6,18 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 01:24:28 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/05 01:27:06 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/06 00:26:54 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char *ft_strdup(const char *s)
+char	*ft_strdup(const char *s)
 {
-	char *str;
-	size_t size;
-	size_t i;
-	int len;
+	char	*str;
+	size_t	size;
+	size_t	i;
+	int		len;
 
 	len = 0;
 	while (s[len] != '\0')
@@ -38,11 +38,12 @@ char *ft_strdup(const char *s)
 	str[i] = '\0';
 	return (str);
 }
-int count_line_length(t_node *list)
+
+int	count_line_length(t_node *list)
 {
-	t_node *tmp;
-	int len;
-	int j;
+	t_node	*tmp;
+	int		len;
+	int		j;
 
 	tmp = list;
 	len = 0;
@@ -53,72 +54,73 @@ int count_line_length(t_node *list)
 		{
 			len++;
 			if (tmp->content[j] == '\n')
-				return len;
+				return (len);
 			j++;
 		}
 		tmp = tmp->next;
 	}
-	return len;
+	return (len);
 }
-t_node *new_node(char *content)
-{
-	t_node *node;
 
+void	list_add_back(t_node **lst, char *content)
+{
+	t_node	*node;
+	t_node	*tmp;
+
+	if (!lst || !content)
+		return ;
 	node = malloc(sizeof(t_node));
 	if (!node)
-		return NULL;
+		return ;
 	node->content = content;
 	node->next = NULL;
-	return node;
-}
-void add_node_back(t_node **lst, t_node *new)
-{
-	t_node *tmp;
-
-	if (!lst || !new)
-		return;
-	if (*lst == NULL)
+	if (!*lst)
 	{
-		*lst = new;
-		return;
+		*lst = node;
+		return ;
 	}
 	tmp = *lst;
 	while (tmp->next)
 		tmp = tmp->next;
-	tmp->next = new;
+	tmp->next = node;
 }
-// if type == 1 means whole list ;type == 0 just nodes
-void free_list(t_node **list, int type, t_node *newline_node)
+
+void	free_list(t_node **list, t_node *newline_node)
 {
-	t_node *tmp;
-	t_node *next;
+	t_node	*tmp;
+	t_node	*next;
 
 	if (!list || !*list)
-		return;
+		return ;
 	tmp = *list;
-	// free everything
-	if (type == 1)
-	{
-		while (tmp)
-		{
-			next = tmp->next;
-			free(tmp->content);
-			free(tmp);
-			tmp = next;
-		}
-		*list = NULL;
-		return;
-	}
-	// free until newline_node (included)
 	while (tmp)
 	{
 		next = tmp->next;
 		free(tmp->content);
 		free(tmp);
 		if (tmp == newline_node)
-			break;
+			break ;
 		tmp = next;
 	}
-	// update list start (next node after newline)
 	*list = next;
+}
+
+int	has_newline(t_node *list)
+{
+	t_node	*tmp;
+	int		i;
+
+	tmp = list;
+	while (tmp)
+	{
+		i = 0;
+		while (tmp->content[i])
+		{
+			if (tmp->content[i] == '\n')
+				return (1);
+			i++;
+		}
+		tmp = tmp->next;
+	}
+	return (0);
 }
