@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 12:27:51 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/05 00:55:11 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/05 15:46:07 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include <fcntl.h>
 #include <string.h>
 
-#define BUFFER_SIZE 1
+#define BUFFER_SIZE 42
 
 typedef struct s_node
 {
