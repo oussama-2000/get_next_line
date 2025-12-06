@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 23:39:30 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/06 00:24:16 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/06 19:39:03 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ char	*extract_line(t_node *list)
 {
 	t_node	*tmp;
 	char	*line;
-	int		len;
 	int		i;
 	int		j;
 
@@ -88,7 +87,7 @@ void	update_list(t_node **list)
 			return ;
 	}
 	free_list(list, newline_node);
-	*list = NULL;
+	*list = NULL; // to reset the pointer 
 	if (read_left)
 		list_add_back(list, read_left);
 }
@@ -140,21 +139,3 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-// int main(void)
-// {
-// 	int fd = open("file.txt", O_RDONLY);
-
-// 	char *result;
-
-// 	while((result = get_next_line(fd)))
-// 	{
-// 		printf("%s",result);
-// 		free(result);
-// 	}
-// 	// result = get_next_line(fd);
-// 	// printf("%s",result);
-// 	// result = get_next_line(fd);
-// 	// printf("%s",result);
-// 	// // result = get_next_line(fd);
-// 	// printf("%s",result);
-// }

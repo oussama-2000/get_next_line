@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 01:24:28 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/06 00:26:54 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/06 19:38:45 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,16 @@
 char	*ft_strdup(const char *s)
 {
 	char	*str;
-	size_t	size;
-	size_t	i;
+	int	i;
 	int		len;
 
 	len = 0;
+	if (!s)
+		return (NULL);
 	while (s[len] != '\0')
 	{
 		len++;
 	}
-	if (!s)
-		return (NULL);
 	str = malloc(len + 1);
 	if (!str)
 		return (NULL);
@@ -77,7 +76,7 @@ void	list_add_back(t_node **lst, char *content)
 	if (!*lst)
 	{
 		*lst = node;
-		return ;
+		return ; //create node and out
 	}
 	tmp = *lst;
 	while (tmp->next)
