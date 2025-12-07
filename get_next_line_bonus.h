@@ -6,9 +6,14 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 12:27:51 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/06 18:22:52 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/06 21:19:42 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 42
+#endif
 
 #ifndef GET_NEX_LINE_BONUS_H
 #define GET_NEX_LINE_BONUS_H
@@ -19,7 +24,8 @@
 #include <fcntl.h>
 #include <string.h>
 
-#define BUFFER_SIZE 42
+
+
 
 typedef struct s_node
 {

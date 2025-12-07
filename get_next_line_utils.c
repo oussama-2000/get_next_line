@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 01:24:28 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/06 19:38:45 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/07 01:23:53 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,13 @@ void	list_add_back(t_node **lst, char *content)
 	if (!*lst)
 	{
 		*lst = node;
-		return ; //create node and out
+		return ;
 	}
 	tmp = *lst;
 	while (tmp->next)
+	{
 		tmp = tmp->next;
+	}
 	tmp->next = node;
 }
 

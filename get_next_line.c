@@ -6,7 +6,7 @@
 /*   By: oamkhou <oamkhou@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/01 23:39:30 by oamkhou           #+#    #+#             */
-/*   Updated: 2025/12/06 19:39:03 by oamkhou          ###   ########.fr       */
+/*   Updated: 2025/12/07 01:23:37 by oamkhou          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	update_list(t_node **list)
 			return ;
 	}
 	free_list(list, newline_node);
-	*list = NULL; // to reset the pointer 
+	*list = NULL;
 	if (read_left)
 		list_add_back(list, read_left);
 }
